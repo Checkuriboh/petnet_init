@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.petnet.domain.map.mapper.PlaceMapper">
+    <!-- Result Map 정의 -->
+    <resultMap id="placeResultMap" type="Place">
+        <result property="placeId" column="place_id" jdbcType="VARCHAR"/>
+        <result property="fcltyNm" column="fclty_nm" jdbcType="VARCHAR"/>
+        <result property="ctgryThreeNm" column="ctgry_three_nm" jdbcType="VARCHAR"/>
+        <result property="ctyprvnSignguNm" column="ctyprvn_signgu_nm" jdbcType="VARCHAR"/>
+        <result property="lcLa" column="lc_la" jdbcType="DOUBLE"/>
+        <result property="lcLo" column="lc_lo" jdbcType="DOUBLE"/>
+        <result property="rdnmadrNm" column="rdnmadr_nm" jdbcType="VARCHAR"/>
+        <result property="hmpgUrl" column="hmpg_url" jdbcType="VARCHAR"/>
+        <result property="telNo" column="tel_no" jdbcType="VARCHAR"/>
+        <result property="rstdeGuidCn" column="rstde_guid_cn" jdbcType="VARCHAR"/>
+        <result property="operTime" column="oper_time" jdbcType="VARCHAR"/>
+        <result property="parkngPosblAt" column="parkng_posbl_at" jdbcType="CHAR"/>
+        <result property="minWeight" column="min_weight" jdbcType="TINYINT"/>
+        <result property="maxWeight" column="max_weight" jdbcType="TINYINT"/>
+        <result property="petLmttMtrCn" column="pet_lmtt_mtr_cn" jdbcType="VARCHAR"/>
+        <result property="petAcptAditChrgeValue" column="pet_acp_adit_chrge_value" jdbcType="VARCHAR"/>
+        <result property="inPlaceAcptPosblAt" column="in_place_acp_posbl_at" jdbcType="CHAR"/>
+        <result property="outPlaceAcptPosblAt" column="out_place_acp_posbl_at" jdbcType="CHAR"/>
+        <result property="fcltyInfoDc" column="fclty_info_dc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 1. 장소 목록 조회 -->
+    <select id="getPlaces" parameterType="PlaceFilter" resultType="Place">
+        SELECT *,
+        (6371 * acos(cos(radians(#{latitude})) * cos(radians(LC_LA)) * cos(radians(LC_LO) - radians(#{longitude})) + sin(radians(#{latitude})) * sin(radians(LC_LA)))) AS distance
+        FROM PLACE
+        WHERE CTGRY_THREE_NM = #{placeType}
+        AND MIN_WEIGHT &lt;= #{maxWeight}
+        AND MAX_WEIGHT &gt;= #{minWeight}
+        HAVING distance &lt;= 3
+        ORDER BY distance;
+    </select>
+
+
+    <!-- 2. 장소 추가 -->
+    <insert id="addPlace" parameterType="Place">
+        INSERT INTO PLACE
+        (PLACE_ID, FCLTY_NM, CTGRY_THREE_NM, ctyprvn_signgu_nm, LC_LA, LC_LO, RDNMADR_NM, HMPG_URL, TEL_NO, RSTDE_GUID_CN,
+         OPER_TIME, PARKNG_POSBL_AT, MIN_WEIGHT, MAX_WEIGHT, PET_LMTT_MTR_CN, PET_ACP_ADIT_CHRGE_VALUE, IN_PLACE_ACP_POSBL_AT,
+         OUT_PLACE_ACP_POSBL_AT, FCLTY_INFO_DC)
+        VALUES
+            (#{placeId}, #{fcltyNm}, #{ctgryThreeNm}, #{ctprvnSignguNm}, #{lcLa}, #{lcLo}, #{rdnmadrNm}, #{hmpgUrl}, #{telNo}, #{rstdeGuidCn},
+             #{operTime}, #{parkngPosblAt}, #{minWeight}, #{maxWeight}, #{petLmttMtrCn}, #{petAcpAditChrgeValue}, #{inPlaceAcpPosblAt},
+             #{outPlaceAcpPosblAt}, #{fcltyInfoDc});
+    </insert>
+
+    <!-- 3. 특정 장소 상세 조회 -->
+    <select id="getPlacesPost" parameterType="String" resultType="Place">
+        SELECT * FROM PLACE WHERE PLACE_ID = #{placeId};
+    </select>
+
+    <!-- 4. 장소 이름 검색 -->
+    <select id="searchPlacesName" parameterType="String" resultType="Place">
+        SELECT * FROM PLACE WHERE FCLTY_NM LIKE CONCAT('%', #{name}, '%');
+    </select>
+
+    <!-- 5. 지역 검색 -->
+    <select id="searchPlacesArea" parameterType="String" resultType="Place">
+        SELECT * FROM PLACE WHERE ctyprvn_signgu_nm = #{area};
+    </select>
+
+    <!-- 6. 랜덤 장소 검색 -->
+    <select id="searchPlacesRandom" parameterType="String" resultType="Place">
+        SELECT * FROM PLACE
+        WHERE ctyprvn_signgu_nm = #{area}
+        ORDER BY RAND() LIMIT 5;
+    </select>
+
+
+</mapper>

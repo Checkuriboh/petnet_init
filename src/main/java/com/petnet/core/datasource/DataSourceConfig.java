@@ -31,10 +31,10 @@ public class DataSourceConfig {
 
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setConfiguration(getMybatisConfig());
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.petnet.domain.**.vo");
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.petnet.domain.map.vo");
 
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] resource = resolver.getResources("sql/*.xml");
+        Resource[] resource = resolver.getResources("classpath:sql/*.xml");
         sqlSessionFactoryBean.setMapperLocations(resource);
 
         return sqlSessionFactoryBean.getObject();
