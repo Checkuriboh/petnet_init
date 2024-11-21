@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: pet-net-server
+  profiles:       # profiles.active: dev / local / prod 활성화 할 메타데이터 선택
+    active: local # application-dev.yml 활성화
+logging:
+  level:
+    root: DEBUG
+server:
+  port: 8080
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    property:
+      prefix: ENC(
+      suffix: )
