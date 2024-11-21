@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class TopicServiceImpl implements TopicService {
@@ -28,6 +30,41 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Topic getTopic(String topicId) throws Exception {
         return topicMapper.getTopic(topicId);
+    }
+
+    @Override
+    public void addTopic(Topic topic) throws Exception {
+
+    }
+
+    @Override
+    public void updateTopic(Topic topic) throws Exception {
+
+    }
+
+    @Override
+    public void deleteTopic(String topicId) throws Exception {
+
+    }
+
+    @Override
+    public List<Topic> getTopics(Character category) throws Exception {
+        return topicMapper.getTopics(null, null, category, null, null);
+    }
+
+    @Override
+    public List<Topic> getTopics(Character range, Integer userId, Character category, Character condition, String keyword) throws Exception {
+        return topicMapper.getTopics(range, userId, category, condition, keyword);
+    }
+
+    @Override
+    public List<Topic> getHotTopics() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public List<Topic> getScrapTopics(Integer userId) throws Exception {
+        return topicMapper.getScrapTopics(userId);
     }
 
 }

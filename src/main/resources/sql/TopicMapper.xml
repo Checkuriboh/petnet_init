@@ -9,7 +9,8 @@
     <resultMap id="topicSelectMap" type="Topic">
         <id property="topicId" column="TOPIC_ID" /> <!-- 기본 키 매핑 -->
         <result property="authorId" column="AUTHOR_ID" />
-        <result property="topicType" column="TOPIC_TYPE"/>
+        <result property="authorName" column="nickname" />
+        <result property="category" column="TOPIC_TYPE"/>
         <result property="title" column="TITLE" />
         <result property="content" column="CONTENT" />
         <result property="viewCount" column="VIEW_COUNT" />
@@ -38,6 +39,63 @@
             is_downloadable
         FROM topic
         WHERE topic_id = #{topicId}
+    </select>
+
+    <!-- SQL : SELECT LIST -->
+    <select id="getTopics" parameterType="map" resultMap="topicSelectMap">
+        SELECT	t.topic_id, t.author_id, u.nickname, t.topic_type, t.title, t.like_count, t.add_date
+        FROM topic as t,
+             user as u
+        <where>
+            t.author_id = u.user_id
+            <if test="range == '2'">
+                AND t.author_id = #{userId}
+            </if>
+            <if test="category != null">
+                AND t.topic_type = #{category}
+            </if>
+            <if test="condition != null">
+                <if test="condition == '1'">
+                    AND t.title Like '%${keyword}%'
+                </if>
+                <if test="condition == '2'">
+                    AND t.content Like '%${keyword}%'
+                </if>
+                <if test="condition == '3'">
+                    AND u.nickname Like '%${keyword}%'
+                </if>
+            </if>
+        </where>
+        ORDER BY t.add_date desc;
+    </select>
+
+    <!-- SQL : SELECT LIST -->
+    <select id="getScrapTopics" parameterType="int" resultMap="topicSelectMap">
+        SELECT	t.topic_id, t.author_id, u.nickname, t.topic_type, t.title, t.like_count, t.add_date
+        FROM topic as t,
+             user as u,
+             item as i
+        <where>
+            t.author_id = u.user_id AND
+            t.author_id = i.user_id
+            <if test="range == '1'">
+                AND i.user_id = #{userId}
+            </if>
+            <if test="category != null">
+                AND t.topic_type = #{category}
+            </if>
+            <if test="condition != null">
+                <if test="condition == '1'">
+                    AND t.title Like '%${keyword}%'
+                </if>
+                <if test="condition == '2'">
+                    AND t.content Like '%${keyword}%'
+                </if>
+                <if test="condition == '3'">
+                    AND u.nickname Like '%${keyword}%'
+                </if>
+            </if>
+        </where>
     </select>
 
 </mapper>

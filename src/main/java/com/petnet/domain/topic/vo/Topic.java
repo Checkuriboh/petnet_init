@@ -14,17 +14,18 @@ import java.sql.Timestamp;
 public class Topic {
 
     /// Field
-    private String topicId;             // TOPIC_ID
-    private int authorId;               // AUTHOR_ID
-    private Character topicType;        // TOPIC_TYPE
-    private String title;               // TITLE
-    private String content;             // CONTENT
-    private int viewCount;              // VIEW_COUNT
-    private int likeCount;              // LIKE_COUNT
-    private int dislikeCount;           // DISLIKE_COUNT
-    private Timestamp addDate;          // ADD_DATE
-    private Timestamp updateDate;       // UPDATE_DATE
-    private String files;  // FILES (JSON)
-    private Boolean isDownloadable;     // IS_DOWNLOADABLE
+    private String topicId;             // topic_id
+    private Integer authorId;               // author_id    //==> User vo
+    private String authorName;          // user.nickname
+    private Character category;              // topic_type
+    private String title;               // title
+    private String content;             // content
+    private Integer viewCount;              // view_count
+    private Integer likeCount;              // like_count
+    private Integer dislikeCount;           // dislike_count
+    private Timestamp addDate;          // add_date
+    private Timestamp updateDate;       // update_date
+    private String files;               // files (JSON)
+    private Boolean isDownloadable;     // is_downloadable
 
 }
